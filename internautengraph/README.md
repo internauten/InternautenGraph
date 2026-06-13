@@ -1,5 +1,13 @@
 # internautengraph
 
+[![Module Version](https://img.shields.io/badge/module-2.0.1-2ea44f)](internautengraph.php)
+[![PrestaShop](https://img.shields.io/badge/PrestaShop-9.1.4-00B8D4)](https://www.prestashop.com)
+[![GitHub release](https://img.shields.io/github/v/release/internauten/InternautenGraph)](https://github.com/internauten/InternautenGraph/releases)
+[![Last commit](https://img.shields.io/github/last-commit/internauten/InternautenGraph)](https://github.com/internauten/InternautenGraph/commits/main)
+[![Issues](https://img.shields.io/github/issues/internauten/InternautenGraph)](https://github.com/internauten/InternautenGraph/issues)
+[![Pull requests](https://img.shields.io/github/issues-pr/internauten/InternautenGraph)](https://github.com/internauten/InternautenGraph/pulls)
+[![License](https://img.shields.io/github/license/internauten/InternautenGraph)](LICENSE)
+
 PrestaShop-Modul, das den Versand von `Mail::Send()` auf einen externen Versanddienst umleitet.
 
 ## Features
@@ -98,3 +106,9 @@ PrestaShop-Modul, das den Versand von `Mail::Send()` auf einen externen Versandd
 ln -s /internauten/InternautenMix/internautengraph /var/www/html/modules/internautengraph
 chown -h www-data:www-data /var/www/html/modules/internautengraph
 ```
+
+## Lizenz
+
+Dieses Projekt steht unter der MIT License. Siehe [LICENSE](LICENSE).
+
+Copyright by die.internauten.ch GmbH
