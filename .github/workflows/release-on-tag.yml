@@ -3,7 +3,7 @@ name: Release On Tag
 on:
   push:
     tags:
-      - "v*.*.*"
+      - 'v*.*.*'
 
 permissions:
   contents: write
