@@ -103,7 +103,7 @@ PrestaShop-Modul, das den Versand von `Mail::Send()` auf einen externen Versandd
 ## Test mit Docker
 
 ```bash
-ln -s /internauten/InternautenMix/internautengraph /var/www/html/modules/internautengraph
+ln -s /internauten/InternautenGraph/internautengraph /var/www/html/modules/internautengraph
 chown -h www-data:www-data /var/www/html/modules/internautengraph
 ```
 

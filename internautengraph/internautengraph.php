@@ -140,6 +140,7 @@ class InternautenGraph extends Module
         );
 
         if ($sentWithGraph) {
+            $this->persistCoreMailLogEntry($params);
             $this->logLifecycleInfo('hook: email sent with configured custom transport, native Mail::Send skipped.');
 
             // Returning false tells Mail::Send to stop and not send natively.
@@ -198,6 +199,88 @@ class InternautenGraph extends Module
         }
 
         PrestaShopLogger::addLog('internautengraph: ' . (string) $message, 1);
+    }
+
+    private function persistCoreMailLogEntry(array $params)
+    {
+        if (!class_exists('Configuration') || !class_exists('Mail')) {
+            return;
+        }
+
+        if ((int) Configuration::get('PS_LOG_EMAILS', 0) !== 1) {
+            return;
+        }
+
+        $template = isset($params['template']) ? (string) $params['template'] : '';
+        $subject = isset($params['subject']) ? (string) $params['subject'] : '';
+        $idLang = isset($params['idLang']) ? (int) $params['idLang'] : (int) Configuration::get('PS_LANG_DEFAULT');
+
+        if ($template === '' || $subject === '' || $idLang <= 0) {
+            return;
+        }
+
+        if (class_exists('Validate') && method_exists('Validate', 'isTplName') && !Validate::isTplName($template)) {
+            return;
+        }
+
+        if ((int) Configuration::get('PS_MAIL_SUBJECT_PREFIX', 0) === 1) {
+            $shopName = (string) Configuration::get('PS_SHOP_NAME');
+            if ($shopName !== '') {
+                $subject = '[' . strip_tags($shopName) . '] ' . $subject;
+            }
+        }
+
+        $recipients = array_merge(
+            $this->normalizeMailRecipients(isset($params['to']) ? $params['to'] : null),
+            $this->normalizeMailRecipients(isset($params['bcc']) ? $params['bcc'] : null)
+        );
+        $recipients = array_values(array_unique($recipients));
+
+        if (empty($recipients)) {
+            return;
+        }
+
+        foreach ($recipients as $recipient) {
+            try {
+                $mail = new Mail();
+                $mail->template = Tools::substr($template, 0, 62);
+                $mail->subject = Tools::substr($subject, 0, 255);
+                $mail->id_lang = (int) $idLang;
+                $mail->recipient = Tools::substr((string) $recipient, 0, 255);
+                $mail->add();
+            } catch (Exception $e) {
+                $this->logLifecycleInfo('mail log persistence failed: ' . $e->getMessage());
+            }
+        }
+    }
+
+    private function normalizeMailRecipients($value)
+    {
+        $recipients = array();
+
+        if (is_array($value)) {
+            foreach ($value as $email) {
+                $address = trim((string) $email);
+                if ($address === '') {
+                    continue;
+                }
+                if (class_exists('Validate') && method_exists('Validate', 'isEmail') && !Validate::isEmail($address)) {
+                    continue;
+                }
+                $recipients[] = $address;
+            }
+
+            return $recipients;
+        }
+
+        if (is_string($value)) {
+            $address = trim($value);
+            if ($address !== '' && (!class_exists('Validate') || !method_exists('Validate', 'isEmail') || Validate::isEmail($address))) {
+                $recipients[] = $address;
+            }
+        }
+
+        return $recipients;
     }
 
     public function getContent()
