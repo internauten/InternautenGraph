@@ -6,7 +6,7 @@
 [![Last commit](https://img.shields.io/github/last-commit/internauten/InternautenGraph)](https://github.com/internauten/InternautenGraph/commits/main)
 [![Issues](https://img.shields.io/github/issues/internauten/InternautenGraph)](https://github.com/internauten/InternautenGraph/issues)
 [![Pull requests](https://img.shields.io/github/issues-pr/internauten/InternautenGraph)](https://github.com/internauten/InternautenGraph/pulls)
-[![License](https://img.shields.io/github/license/internauten/InternautenGraph)](LICENSE)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
 PrestaShop-Modul, das den Versand von `Mail::Send()` auf einen externen Versanddienst umleitet.
 
