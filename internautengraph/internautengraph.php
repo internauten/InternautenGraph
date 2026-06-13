@@ -31,7 +31,7 @@ class InternautenGraph extends Module
     {
         $this->name = 'internautengraph';
         $this->tab = 'administration';
-        $this->version = '2.0.1';
+        $this->version = '2.0.2';
         $this->author = 'die.internauten.ch GmbH';
         $this->need_instance = 0;
         $this->bootstrap = true;
