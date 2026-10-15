@@ -98,6 +98,7 @@ PrestaShop-Modul, das den Versand von `Mail::Send()` auf einen externen Versandd
 - In der Modulkonfiguration gibt es ein eigenes Feld `Test recipient email` mit Button `Send test email`, um den aktuell gewaehlten Transport direkt zu pruefen.
 - Bei Transport-Fehlern werden Details im Modul-Backend angezeigt (`Last custom transport error`).
 - Optionaler Schalter `Debug template variables`: schreibt bei Bedarf Variable-Keys und nicht ersetzte Platzhalter in die PrestaShop-Logs (zum Troubleshooting, standardmaessig aus).
+- Template-Platzhalter werden wie im PrestaShop-Core nur in der Form `{name}` ersetzt. Variablen ohne Klammern werden automatisch zu `{name}` ergaenzt. Bis Version 2.0.2 wurden auch nackte Woerter ersetzt (z. B. `products` in der CSS-Klasse `products-table`).
 - Debug-Logs enthalten eine Request-ID (`rid=...`), damit zusammengehoerige Eintraege pro Versandversuch leicht gefiltert werden koennen.
 
 ## Test mit Docker

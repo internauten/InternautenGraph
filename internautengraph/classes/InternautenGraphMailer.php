@@ -508,26 +508,21 @@ class InternautenGraphMailer
             }
         }
 
-        // Keep both notations because some modules inject keys without braces.
+        // Only braced keys may be replaced; bare keys would also hit plain words like CSS class "products-table".
+        $braced = array();
         foreach ($normalized as $key => $value) {
-            if (!is_string($key)) {
+            if (!is_string($key) || $key === '') {
                 continue;
             }
 
             if (preg_match('/^\{.+\}$/', $key)) {
-                $withoutBraces = trim($key, '{}');
-                if ($withoutBraces !== '' && !isset($normalized[$withoutBraces])) {
-                    $normalized[$withoutBraces] = $value;
-                }
-            } else {
-                $withBraces = '{' . $key . '}';
-                if (!isset($normalized[$withBraces])) {
-                    $normalized[$withBraces] = $value;
-                }
+                $braced[$key] = $value;
+            } elseif (!isset($normalized['{' . $key . '}'])) {
+                $braced['{' . $key . '}'] = $value;
             }
         }
 
-        return $normalized;
+        return $braced;
     }
 
     private static function normalizeRecipients($emails, $names)

@@ -2,7 +2,7 @@
 <module>
     <name>internautengraph</name>
     <displayName><![CDATA[Internauten Graph Mail]]></displayName>
-    <version><![CDATA[2.0.2]]></version>
+    <version><![CDATA[2.0.3]]></version>
     <description><![CDATA[Routes PrestaShop mail sending through Microsoft Graph API or SMTP STARTTLS.]]></description>
     <author><![CDATA[die.internauten.ch GmbH]]></author>
     <tab><![CDATA[administration]]></tab>
