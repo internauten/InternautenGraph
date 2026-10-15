@@ -31,7 +31,7 @@ class InternautenGraph extends Module
     {
         $this->name = 'internautengraph';
         $this->tab = 'administration';
-        $this->version = '2.0.3';
+        $this->version = '2.0.4';
         $this->author = 'die.internauten.ch GmbH';
         $this->need_instance = 0;
         $this->bootstrap = true;
@@ -85,8 +85,8 @@ class InternautenGraph extends Module
         $manualOverrideRemoved = $this->removeInstalledMailOverrideIfOwnedByModule();
         $this->logLifecycleInfo(
             $manualOverrideRemoved
-                ? 'Manual cleanup removed override/classes/Mail.php owned by module.'
-                : 'Manual cleanup did not remove override/classes/Mail.php (file missing or not owned by module).'
+            ? 'Manual cleanup removed override/classes/Mail.php owned by module.'
+            : 'Manual cleanup did not remove override/classes/Mail.php (file missing or not owned by module).'
         );
 
         if ($manualOverrideRemoved) {

@@ -1,6 +1,12 @@
+<!--
+Documentation for the internautengraph PrestaShop module.
+Copyright (c) 2026 die.internauten.ch GmbH
+License: MIT
+-->
+
 # internautengraph
 
-[![Module Version](https://img.shields.io/badge/module-2.0.1-2ea44f)](internautengraph.php)
+[![Module Version](https://img.shields.io/badge/module-2.0.4-2ea44f)](internautengraph/internautengraph.php)
 [![PrestaShop](https://img.shields.io/badge/PrestaShop-9.1.4-00B8D4)](https://www.prestashop.com)
 [![GitHub release](https://img.shields.io/github/v/release/internauten/InternautenGraph)](https://github.com/internauten/InternautenGraph/releases)
 [![Last commit](https://img.shields.io/github/last-commit/internauten/InternautenGraph)](https://github.com/internauten/InternautenGraph/commits/main)
@@ -8,108 +14,119 @@
 [![Pull requests](https://img.shields.io/github/issues-pr/internauten/InternautenGraph)](https://github.com/internauten/InternautenGraph/pulls)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
-PrestaShop-Modul, das den Versand von `Mail::Send()` auf einen externen Versanddienst umleitet.
+PrestaShop module that reroutes `Mail::Send()` to an external mail transport.
 
 ## Features
 
-- Nutzt den Hook `actionEmailSendBefore`, um den nativen Versand vor dem Senden abzufangen.
-- Versendet E-Mails ueber Microsoft Graph `sendMail` oder SMTP mit STARTTLS.
-- Liest die PrestaShop-Mailtemplates (`.html` / `.txt`) und ersetzt Template-Variablen.
-- Fallback auf den nativen PrestaShop-Mailversand, falls Graph fehlschlaegt.
+- Uses the `actionEmailSendBefore` hook to intercept native mail sending before it happens.
+- Sends emails through Microsoft Graph `sendMail` or SMTP with STARTTLS.
+- Reads the PrestaShop mail templates (`.html` / `.txt`) and replaces template variables.
+- Falls back to native PrestaShop mail sending if Graph fails.
 
 ## Installation
 
-1. Modulordner `internautengraph` nach `modules/` kopieren.
-2. Modul im Back Office installieren.
-3. In der Modulkonfiguration den Versanddienst (`Mail transport`) waehlen.
-4. Je nach Versanddienst die passenden Werte setzen:
+1. Copy the `internautengraph` module folder to `modules/`.
+2. Install the module in the back office.
+3. Select the mail transport (`Mail transport`) in the module configuration.
+4. Set the values required by the selected transport:
    - Microsoft Graph API:
      - Tenant ID
      - Client ID
      - Client Secret
-     - Sender mailbox (Office 365 Benutzer)
+     - Sender mailbox (Office 365 user)
    - SMTP with STARTTLS:
      - SMTP host
-     - SMTP port (typisch 587)
+     - SMTP port (typically 587)
      - SMTP username
      - SMTP password
-     - SMTP sender email (optional zusaetzlich SMTP sender name)
-5. Modul aktivieren und eine erste Testmail aus PrestaShop ausloesen.
+     - SMTP sender email (optionally also SMTP sender name)
+5. Enable the module and trigger a first test email from PrestaShop.
 
-## Azure und Office 365 Schritt fuer Schritt
+## Azure and Office 365 step by step
 
-### 1) App in Microsoft Entra ID registrieren
+### 1) Register an app in Microsoft Entra ID
 
-1. Azure Portal oeffnen und zu `Microsoft Entra ID` > `App registrations` > `New registration` wechseln.
-2. Einen Namen vergeben, zum Beispiel `Prestashop Internauten Graph`.
-3. `Accounts in this organizational directory only` auswaehlen.
-4. Registrierung speichern.
-5. In der Uebersicht die Werte notieren:
-   - `Application (client) ID` (deutsch meist `Anwendungs-ID (Client)`)
-   - `Directory (tenant) ID` (deutsch meist `Verzeichnis-ID (Mandant)` oder `Mandanten-ID`)
+1. Open the Azure portal and go to `Microsoft Entra ID` > `App registrations` > `New registration`.
+2. Enter a name, for example `Prestashop Internauten Graph`.
+3. Select `Accounts in this organizational directory only`.
+4. Save the registration.
+5. Note the following values from the overview:
+   - `Application (client) ID` (German UI: usually `Anwendungs-ID (Client)`)
+   - `Directory (tenant) ID` (German UI: usually `Verzeichnis-ID (Mandant)` or `Mandanten-ID`)
 
-### 2) Client Secret erstellen
+### 2) Create a client secret
 
-1. In der App zu `Certificates & secrets` wechseln.
-2. Unter `Client secrets` auf `New client secret` klicken.
-3. Beschreibung und Gueltigkeit waehlen, danach speichern.
-4. Den Secret-`Value` sofort kopieren und sicher speichern (wird spaeter nicht mehr voll angezeigt).
+1. In the app, go to `Certificates & secrets`.
+2. Under `Client secrets`, click `New client secret`.
+3. Choose a description and expiry, then save.
+4. Copy the secret `Value` immediately and store it securely (it will not be fully shown again later).
 
-### 3) Microsoft Graph Berechtigungen setzen
+### 3) Set Microsoft Graph permissions
 
-1. In der App zu `API permissions` wechseln.
-2. `Add a permission` > `Microsoft Graph` > `Application permissions` waehlen.
-3. Berechtigung `Mail.Send` hinzufuegen.
-4. `Grant admin consent` fuer den Tenant ausfuehren.
-5. Pruefen, dass der Status `Granted for <Tenant>` angezeigt wird.
+1. In the app, go to `API permissions`.
+2. Select `Add a permission` > `Microsoft Graph` > `Application permissions`.
+3. Add the `Mail.Send` permission.
+4. Run `Grant admin consent` for the tenant.
+5. Check that the status shows `Granted for <Tenant>`.
 
-### 4) Office 365 Mailbox als Absender vorbereiten
+### 4) Prepare an Office 365 mailbox as sender
 
-1. Eine bestehende Benutzer-Mailbox festlegen, zum Beispiel `shop@example.com`.
-2. Sicherstellen, dass die Mailbox eine Exchange Online Lizenz hat und senden darf.
-3. Falls Conditional Access aktiv ist, sicherstellen, dass App-only Zugriff auf Graph fuer diese Anwendung nicht blockiert wird.
-4. Die Mailbox-Adresse exakt notieren. Diese Adresse wird in der Modulkonfiguration als `Sender mailbox` verwendet.
+1. Choose an existing user mailbox, for example `shop@example.com`.
+2. Make sure the mailbox has an Exchange Online license and is allowed to send.
+3. If Conditional Access is enabled, make sure app-only access to Graph is not blocked for this application.
+4. Note the exact mailbox address. This address is used as `Sender mailbox` in the module configuration.
 
-### 5) Werte im PrestaShop Modul eintragen
+### 5) Enter the values in the PrestaShop module
 
-1. In PrestaShop `Module` > `internautengraph` > `Konfigurieren` oeffnen.
-2. `Enable Graph sending` auf `Yes` setzen.
-3. Felder fuellen:
-   - `Tenant ID` = `Directory (tenant) ID` (deutsch: `Verzeichnis-ID (Mandant)` oder `Mandanten-ID`)
-   - `Client ID` = `Application (client) ID` (deutsch: `Anwendungs-ID (Client)`)
-   - `Client Secret` = Secret Value
-   - `Sender mailbox` = Exchange Online Mailbox (z. B. `shop@example.com`)
-4. Speichern.
+1. In PrestaShop, open `Modules` > `internautengraph` > `Configure`.
+2. Set `Enable Graph sending` to `Yes`.
+3. Fill in the fields:
+   - `Tenant ID` = `Directory (tenant) ID` (German UI: `Verzeichnis-ID (Mandant)` or `Mandanten-ID`)
+   - `Client ID` = `Application (client) ID` (German UI: `Anwendungs-ID (Client)`)
+   - `Client Secret` = secret value
+   - `Sender mailbox` = Exchange Online mailbox (e.g. `shop@example.com`)
+4. Save.
 
-### 6) Funktion testen
+### 6) Test the setup
 
-1. In PrestaShop eine Aktion mit E-Mail-Versand ausloesen (z. B. Passwort vergessen oder Kontaktformular).
-2. In Exchange Online `Sent Items` der Absender-Mailbox pruefen.
-3. Falls keine Mail ankommt, zuerst App-Berechtigungen, Admin-Consent und Secret-Gueltigkeit kontrollieren.
-4. Falls Graph fehlschlaegt, verwendet das Modul automatisch den nativen PrestaShop-Mailversand als Fallback.
+1. Trigger an action in PrestaShop that sends an email (e.g. forgotten password or contact form).
+2. Check `Sent Items` of the sender mailbox in Exchange Online.
+3. If no email arrives, first check the app permissions, admin consent, and secret validity.
+4. If Graph fails, the module automatically falls back to native PrestaShop mail sending.
 
-## Hinweise
+## Notes
 
-- Das Modul unterstuetzt zwei Transportmodi: `Microsoft Graph API` und `SMTP with STARTTLS`.
-- Fuer Graph verwendet das Modul den OAuth2 Client-Credentials-Flow.
-- Der Versand wird ueber den Hook `actionEmailSendBefore` umgeleitet (kein aktiver Klassen-Override erforderlich).
-- Bei aktivierter Transport-Konfiguration wird zuerst der gewaehlte Transport versucht.
-- Falls der gewaehlte Transport nicht verfuegbar ist oder eine Anfrage fehlschlaegt, wird auf den Standardversand von PrestaShop zurueckgefallen.
-- In der Modulkonfiguration gibt es ein eigenes Feld `Test recipient email` mit Button `Send test email`, um den aktuell gewaehlten Transport direkt zu pruefen.
-- Bei Transport-Fehlern werden Details im Modul-Backend angezeigt (`Last custom transport error`).
-- Optionaler Schalter `Debug template variables`: schreibt bei Bedarf Variable-Keys und nicht ersetzte Platzhalter in die PrestaShop-Logs (zum Troubleshooting, standardmaessig aus).
-- Template-Platzhalter werden wie im PrestaShop-Core nur in der Form `{name}` ersetzt. Variablen ohne Klammern werden automatisch zu `{name}` ergaenzt. Bis Version 2.0.2 wurden auch nackte Woerter ersetzt (z. B. `products` in der CSS-Klasse `products-table`).
-- Debug-Logs enthalten eine Request-ID (`rid=...`), damit zusammengehoerige Eintraege pro Versandversuch leicht gefiltert werden koennen.
+- The module supports two transport modes: `Microsoft Graph API` and `SMTP with STARTTLS`.
+- For Graph, the module uses the OAuth2 client credentials flow.
+- Sending is rerouted through the `actionEmailSendBefore` hook (no active class override required).
+- When the transport configuration is enabled, the selected transport is tried first.
+- If the selected transport is unavailable or a request fails, the module falls back to the default PrestaShop mail sending.
+- The module configuration has a dedicated `Test recipient email` field with a `Send test email` button to test the currently selected transport directly.
+- Transport errors are shown in the module back office (`Last custom transport error`).
+- Optional `Debug template variables` switch: writes variable keys and unreplaced placeholders to the PrestaShop logs when needed (for troubleshooting, off by default).
+- As in the PrestaShop core, template placeholders are only replaced in the `{name}` form. Variables without braces are automatically completed to `{name}`. Up to version 2.0.2, bare words were replaced as well (e.g. `products` in the CSS class `products-table`).
+- Debug logs contain a request ID (`rid=...`) so that related entries per send attempt can easily be filtered.
 
-## Test mit Docker
+## Testing with Docker
 
-```bash
-ln -s /internauten/InternautenGraph/internautengraph /var/www/html/modules/internautengraph
-chown -h www-data:www-data /var/www/html/modules/internautengraph
+The local shop runs in the Docker Compose project `WoWGetPrestaLocal`, located next to this repository. Its `docker-compose.yml` mounts the module folder directly into the shop, so file changes are live without copying or symlinking:
+
+```yaml
+- ${HOME}/internauten/InternautenGraph/internautengraph:/var/www/wow9.internaut.ch/html/modules/internautengraph
 ```
 
-## Lizenz
+Run the commands from `../WoWGetPrestaLocal`:
 
-Dieses Projekt steht unter der MIT License. Siehe [LICENSE](LICENSE).
+```bash
+docker compose up -d
+# Clear the cache after template, hook, or config changes
+docker compose exec php sh -c 'rm -rf var/cache/prod var/cache/dev'
+```
+
+The front office is available at `http://localhost:8081`.
+
+## License
+
+This project is licensed under the MIT License. See [LICENSE](LICENSE).
 
 Copyright by die.internauten.ch GmbH
